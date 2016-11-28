@@ -12,6 +12,7 @@ import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 import ch.qos.logback.core.rolling.TimeBasedFileNamingAndTriggeringPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.spi.DeferredProcessingAware;
+import ch.qos.logback.core.util.FileSize;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -55,7 +56,7 @@ import javax.validation.constraints.Min;
  *         <td>Whether or not to archive old events in separate files.</td>
  *     </tr>
  *     <tr>
- *         <td>{@code archivedLogFilenamePattern}</td>
+ *         <td>{@code}</td>
  *         <td><b>REQUIRED</b> if {@code archive} is {@code true}.</td>
  *         <td>
  *             The filename pattern for archived files.
@@ -71,7 +72,20 @@ import javax.validation.constraints.Min;
  *         <td>{@code 5}</td>
  *         <td>
  *             The number of archived files to keep. Must be greater than or equal to {@code 0}. Zero is a
- *             special value signifying to keep infinite logs (use with caution)
+ *             special value signifying to keep infinite logs (use with caution). When using %d in the
+ *             {@code archivedLogFilenamePattern}, {@code archivedFileCount} will only limit total number of files by
+ *             date. For example 5 will ensure five days of files. However, the number and size of those files can be
+ *             infinite. See {@code maxArchiveSize} to set a bound on maximum size of all archive files.
+ *         </td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@code maxArchiveSize}</td>
+ *         <td>(unlimited)</td>
+ *         <td>
+ *             The maximum size of all archive files when totalled. The value can be expressed
+ *             in bytes, kilobytes, megabytes, gigabytes, and terabytes by appending B, K, MB, GB, or TB to the
+ *             numeric value.  Examples include 100MB, 1GB, 1TB.  Sizes can also be spelled out, such as 100 megabytes,
+ *             1 gigabyte, 1 terabyte. This value only applies when using %d in the {@code archivedLogFilenamePattern}.
  *         </td>
  *     </tr>
  *     <tr>
@@ -115,6 +129,8 @@ public class FileAppenderFactory<E extends DeferredProcessingAware> extends Abst
     private int archivedFileCount = 5;
 
     private Size maxFileSize;
+
+    private Size maxArchiveSize;
 
     @JsonProperty
     public String getCurrentLogFilename() {
@@ -164,6 +180,16 @@ public class FileAppenderFactory<E extends DeferredProcessingAware> extends Abst
     @JsonProperty
     public void setMaxFileSize(Size maxFileSize) {
         this.maxFileSize = maxFileSize;
+    }
+
+    @JsonProperty
+    public void setMaxArchiveSize(Size maxArchiveSize) {
+        this.maxArchiveSize = maxArchiveSize;
+    }
+
+    @JsonProperty
+    public Size getMaxArchiveSize() {
+        return this.maxArchiveSize;
     }
 
     @JsonIgnore
@@ -252,6 +278,9 @@ public class FileAppenderFactory<E extends DeferredProcessingAware> extends Abst
                         triggeringPolicy);
                 triggeringPolicy.setTimeBasedRollingPolicy(rollingPolicy);
                 rollingPolicy.setMaxHistory(archivedFileCount);
+                if(maxArchiveSize != null) {
+                    rollingPolicy.setTotalSizeCap(new FileSize(maxArchiveSize.getQuantity()));
+                }
 
                 appender.setRollingPolicy(rollingPolicy);
                 appender.setTriggeringPolicy(triggeringPolicy);

@@ -6,10 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.rolling.FixedWindowRollingPolicy;
-import ch.qos.logback.core.rolling.RollingFileAppender;
-import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP;
-import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
+import ch.qos.logback.core.rolling.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 import io.dropwizard.jackson.DiscoverableSubtypeResolver;
@@ -191,7 +188,7 @@ public class FileAppenderFactoryTest {
 
         assertThat(appender.getRollingPolicy()).isInstanceOf(FixedWindowRollingPolicy.class);
         assertThat(appender.getRollingPolicy().isStarted()).isTrue();
-        
+
         assertThat(appender.getTriggeringPolicy()).isInstanceOf(SizeBasedTriggeringPolicy.class);
         assertThat(appender.getTriggeringPolicy().isStarted()).isTrue();
         assertThat(((SizeBasedTriggeringPolicy) appender.getTriggeringPolicy()).getMaxFileSize()).isEqualTo("1024");
