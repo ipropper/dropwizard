@@ -49,5 +49,10 @@ Dropwizard is generously supported by some companies with licenses and free acco
 ### JetBrains
 
 ![JetBrains](docs/source/about/jetbrains.png)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fipropper%2Fdropwizard.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fipropper%2Fdropwizard?ref=badge_shield)
 
 [JetBrains](https://www.jetbrains.com/) supports our open source project by sponsoring some [All Products Packs](https://www.jetbrains.com/products.html) within their [Free Open Source License](https://www.jetbrains.com/buy/opensource/) program.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fipropper%2Fdropwizard.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fipropper%2Fdropwizard?ref=badge_large)
